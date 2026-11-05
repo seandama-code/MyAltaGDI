@@ -1,0 +1,29 @@
+#include "AdditionalRes.h"
+
+
+RULES             RCDATA   "Rules.txt"
+
+
+ZZ_LEGNO          BITMAP   "ZZ_Legno.bmp"
+ZZ_FONDO          BITMAP   "ZZ_Fondo.bmp"
+
+ZZ_PEDDIAGSIN     BITMAP   "ZZ_PedinaDiagSin.bmp"
+ZZ_PEDDIAGDES     BITMAP   "ZZ_PedinaDiagDes.bmp"
+
+ZZ_LEDVERDE       BITMAP   "ZZZ_LedVerde.bmp"
+ZZ_LEDROSSO       BITMAP   "ZZZ_LedRosso.bmp"
+ZZ_LEDSPENT       BITMAP   "ZZZ_LedSpent.bmp"
+
+
+
+
+
+
+/*
+ZZ_CORNICE     BITMAP   "ZZ_Cornice.bmp"
+
+// i mazzi di carte
+ZZ_SUITE_06    BITMAP   "Suite_06.bmp"
+
+*/
+

@@ -1,0 +1,39 @@
+                        Regole del gioco: ALTA
+
+                 COME SI GIOCA
+Il gioco è composto da un tavoliere con 57 caselle quadrate (figura 1)
+e da un numero illimitato di tessere, ciascuna con un segmento diagonale che collega 
+due vertici opposti. 
+
+Il segmento ha lo stesso colore per entrambi i giocatori, poiché una volta posizionate, 
+le tessere non appartengono più a nessuno dei giocatori e contribuiscono a formare 
+percorsi comuni (figura 2).
+
+Si gioca in due. 
+
+I giocatori giocano a turno. 
+
+Ogni giocatore ha una sola mossa per ciascun turno.
+
+Inizia indifferentemente uno dei giocatori. 
+Durante il proprio turno un giocatore deve collocare una nuova tessera su una casella libera
+del tavoliere (eccetto quelle proibite) oppure ruotare di 90° una tessera già in gioco. 
+
+Le caselle a4, a5, a6, i4, i5, i6 sono proibite per il Verde. 
+Le caselle d9, e9, f9, d1, e1, f1 sono proibite per il Rosso.
+ 
+Vince il primo giocatore che crea un percorso continuo che collega le proprie caselle 
+“obbiettivo”: 
+il Verde deve collegare e1-e9.
+Il Rosso deve collegare a5-i5. 
+
+Un giocatore vince anche se, con la stessa mossa, raggiunge il proprio obbiettivo 
+e crea un percorso vincente per l’avversario. 
+
+Un giocatore perde immediatamente se compie una mossa che collega le caselle “obbiettivo” 
+dell’avversario.
+ 
+Nell'esempio in figura 3 il Verde ha vinto la partita grazie al percorso 
+e9 - e8 - f8 - g8 - g7 - f6 - e6 - d7 - c7 - b6 - b5 - c5 - d5 - d4 - d3 - e2 - e1.
+ 
+Buon divertimento.
