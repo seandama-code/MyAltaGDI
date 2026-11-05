@@ -14,7 +14,6 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 15
   object Panel1: TPanel
     Left = 0
@@ -33,7 +32,7 @@ object frmMain: TfrmMain
       Height = 64
       Alignment = taCenter
       AutoSize = False
-      Caption = 'ALTA'
+      Caption = 'ALTA 1'
       Color = clAqua
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
