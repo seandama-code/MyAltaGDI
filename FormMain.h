@@ -107,6 +107,7 @@ private:	// User declarations
     bool  partitaFinita_;
     void  CheckFinePartita();
     void  CheckWinner     ( int Idx, int IdxFine, int Quale  );
+    void  EliminaDiagonaliFuoriPercorso();
     void  Ricorsiva       ( int Idx, int IdxFine, int Player );
     std::vector<int> percorsoWin_;
     void  DisegnaPercorsoWin();

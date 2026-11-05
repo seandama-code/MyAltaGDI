@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include <tchar.h>
+#include <algorithm>
 
 // serve per la funzione: sndPlaySound ("xx.wav", SND_ASYNC | SND_FILENAME);
 #include <mmsystem.h>
@@ -728,7 +729,7 @@ int TfrmMain::ClickSuCasella( int X, int Y )
         TCasella* C = &caselleVect_[i];
         if( C->ClickSuCasella( X, Y ) != NO_VAL )
         {
-            return i;   // è l'Idx della casella
+            return i;   // ï¿½ l'Idx della casella
         }
     }
 
@@ -787,24 +788,91 @@ void TfrmMain::CheckFinePartita()
 void TfrmMain::CheckWinner( int Idx, int IdxFine, int Quale )
 {
     partitaFinita_ = false;
-
-    // ==============================================
-    // considero tutte le caselle NON testate
-    for( UINT i = 0; i < caselleVect_.size(); i ++ )
-        caselleVect_[i].SetTestata( false );
-
     percorsoWin_.clear();
 
-    // per il PLAYER parto dalla casella  1 e controllo se posso arrivare alla 55
-    // per  l'OPPOSI parto dalla casella 24 e controllo se posso arrivare alla 32
-    Ricorsiva( Idx, IdxFine, Quale );
+    if( Idx >= 0 && Idx < caselleVect_.size() &&
+        IdxFine >= 0 && IdxFine < caselleVect_.size() &&
+        caselleVect_[Idx].GetStato() != LIBERO &&
+        caselleVect_[IdxFine].GetStato() != LIBERO )
+    {
+        std::vector<int> precedente( caselleVect_.size(), -1 );
+        std::vector<int> coda;
+        precedente[Idx] = Idx;
+        coda.push_back( Idx );
 
+        for( UINT posizione = 0;
+             posizione < coda.size() && precedente[IdxFine] == -1;
+             posizione ++ )
+        {
+            int corrente = coda[posizione];
+            TCasella* C = &caselleVect_[corrente];
+            int Stato = C->GetStato();
+            int vicini[8] =
+            {
+                C->GetIdxAltSin(), C->GetIdxAltCen(),
+                C->GetIdxAltDes(), C->GetIdxDestra(),
+                C->GetIdxBasDes(), C->GetIdxBasCen(),
+                C->GetIdxBasSin(), C->GetIdxSinist()
+            };
 
-ListBox3->Visible = true;
-ListBox3->Clear();
-for( UINT i = 0; i < percorsoWin_.size(); i ++ )
-ListBox3->Items->Add( percorsoWin_[i] );
+            for( int direzione = 0; direzione < 8; direzione ++ )
+            {
+                int vicino = vicini[direzione];
+                if( vicino == NO_VAL || vicino < 0 ||
+                    vicino >= caselleVect_.size() ||
+                    precedente[vicino] != -1 )
+                    continue;
 
+                int StatoVicino = caselleVect_[vicino].GetStato();
+                if( StatoVicino == LIBERO )
+                    continue;
+
+                bool diagonaleValida = false;
+                if( Stato == DIAGSIN && ( direzione == 0 || direzione == 4 ) )
+                    diagonaleValida = StatoVicino == Stato;
+                else if( Stato == DIAGDES && ( direzione == 2 || direzione == 6 ) )
+                    diagonaleValida = StatoVicino == Stato;
+                else if( direzione == 1 || direzione == 3 ||
+                         direzione == 5 || direzione == 7 )
+                    diagonaleValida = StatoVicino != Stato;
+
+                if( diagonaleValida )
+                {
+                    precedente[vicino] = corrente;
+                    coda.push_back( vicino );
+                }
+            }
+        }
+
+        if( precedente[IdxFine] != -1 )
+        {
+            for( int corrente = IdxFine; corrente != Idx; corrente = precedente[corrente] )
+                percorsoWin_.push_back( corrente );
+            percorsoWin_.push_back( Idx );
+            std::reverse( percorsoWin_.begin(), percorsoWin_.end() );
+
+            partitaFinita_ = true;
+            playerWin_ = Quale;
+            EliminaDiagonaliFuoriPercorso();
+            PlaySound( RES_VITTORIA3, HInstance, SND_RESOURCE | SND_ASYNC );
+        }
+    }
+
+    ListBox3->Visible = true;
+    ListBox3->Clear();
+    for( UINT i = 0; i < percorsoWin_.size(); i ++ )
+        ListBox3->Items->Add( percorsoWin_[i] );
+
+}
+//---------------------------------------------------------------------------
+
+void TfrmMain::EliminaDiagonaliFuoriPercorso()
+{
+    for( UINT i = 0; i < caselleVect_.size(); i ++ )
+    {
+        if( !InLista( i ) )
+            caselleVect_[i].SetStato( LIBERO );
+    }
 }
 //---------------------------------------------------------------------------
 
@@ -816,7 +884,7 @@ void TfrmMain::Ricorsiva( int Idx, int IdxFine, int Player )
 
     TCasella* C = &caselleVect_[Idx];
 
-    if( C->GetTestata() ) return;   // già testata
+    if( C->GetTestata() ) return;   // giï¿½ testata
     C->SetTestata( true );
 
     int Stato = C->GetStato();
@@ -824,7 +892,7 @@ void TfrmMain::Ricorsiva( int Idx, int IdxFine, int Player )
     {
         percorsoWin_.push_back( Idx );
 
-        // se è stata raggiunta la casella della vittoria
+        // se ï¿½ stata raggiunta la casella della vittoria
         if( Idx == IdxFine )
         {
             partitaFinita_ = true;
@@ -995,8 +1063,6 @@ void TfrmMain::DisegnaPercorsoWin()
 ListBox1->Visible = true;
 ListBox1->Clear();
 
-    TogliRamiSecchi();
-
     Gdiplus::Color Verde = TColorToGdiplusColor( clLime, 255 );
     Gdiplus::Color Rosso = TColorToGdiplusColor( clRed , 255 );
 
@@ -1086,7 +1152,7 @@ bool TfrmMain::CheckRamoSecco( int Idx )
         TogliIdx( 24 );
         TogliIdx( 32 );
 
-        if( Idx ==  1 || Idx == 55 ) return false;   // non è un ramo secco
+        if( Idx ==  1 || Idx == 55 ) return false;   // non ï¿½ un ramo secco
     }
 
     if( playerWin_ == OPPOSI )
@@ -1094,7 +1160,7 @@ bool TfrmMain::CheckRamoSecco( int Idx )
         TogliIdx(  1 );
         TogliIdx( 55 );
 
-        if( Idx == 24 || Idx == 32 ) return false;   // non è un ramo secco
+        if( Idx == 24 || Idx == 32 ) return false;   // non ï¿½ un ramo secco
     }
 
 
@@ -1148,7 +1214,7 @@ bool TfrmMain::CheckRamoSecco( int Idx )
         if( Sec1 || Sec2 ) return true;    // ramo secco
     }
 
-    return false;  // NON è un ramo secco
+    return false;  // NON ï¿½ un ramo secco
 }
 //---------------------------------------------------------------------------
 
@@ -1182,7 +1248,7 @@ bool TfrmMain::Check3DiaSinAlt( int Id1, int Id2, int Id3 )
     if( Sta1 == LIBERO && Sta2 == LIBERO && Sta3 == LIBERO )
         return true;   // E' un ramo secco
 
-    return false;  // NON è un ramo secco
+    return false;  // NON ï¿½ un ramo secco
 }
 //---------------------------------------------------------------------------
 
@@ -1216,7 +1282,7 @@ bool TfrmMain::Check3DiaSinBas( int Id1, int Id2, int Id3 )
     if( Sta1 == LIBERO && Sta2 == LIBERO && Sta3 == LIBERO )
         return true;   // E' un ramo secco
 
-    return false;  // NON è un ramo secco
+    return false;  // NON ï¿½ un ramo secco
 }
 //---------------------------------------------------------------------------
 
@@ -1250,7 +1316,7 @@ bool TfrmMain::Check3DiaDesAlt( int Id1, int Id2, int Id3 )
     if( Sta1 == LIBERO && Sta2 == LIBERO && Sta3 == LIBERO )
         return true;   // E' un ramo secco
 
-    return false;  // NON è un ramo secco
+    return false;  // NON ï¿½ un ramo secco
 }
 //---------------------------------------------------------------------------
 
@@ -1284,7 +1350,7 @@ bool TfrmMain::Check3DiaDesBas( int Id1, int Id2, int Id3 )
     if( Sta1 == LIBERO && Sta2 == LIBERO && Sta3 == LIBERO )
         return true;   // E' un ramo secco
 
-    return false;  // NON è un ramo secco
+    return false;  // NON ï¿½ un ramo secco
 }
 //---------------------------------------------------------------------------
 
@@ -1313,4 +1379,3 @@ void TfrmMain::TogliIdx( int Idx )
     }
 }
 //---------------------------------------------------------------------------
-
