@@ -6,7 +6,7 @@
         <AppType>Application</AppType>
         <MainSource>MyAltaGDI.cpp</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64x</Platform>
         <TargetedPlatforms>1048577</TargetedPlatforms>
         <ProjectName Condition="'$(ProjectName)'==''">MyAltaGDI</ProjectName>
@@ -164,6 +164,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64x)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;vclimg.bpi</LinkPackageImports>
     </PropertyGroup>
     <ItemGroup>
         <ResourceCompile Include="..\AdditionalWav.rc">

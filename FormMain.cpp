@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -358,7 +358,7 @@ imgAttrs.SetColorKey( Col, Col, Gdiplus::ColorAdjustTypeDefault );
     if( partitaFinita_ )
         DisegnaPercorsoWin();
 
-    DisegnaIdxCasella();
+//    DisegnaIdxCasella();
 
     // ========================================================
     Gdiplus::Graphics g( PaintBoxBoard->Canvas->Handle );
@@ -858,7 +858,7 @@ void TfrmMain::CheckWinner( int Idx, int IdxFine, int Quale )
         }
     }
 
-    ListBox3->Visible = true;
+//    ListBox3->Visible = true;
     ListBox3->Clear();
     for( UINT i = 0; i < percorsoWin_.size(); i ++ )
         ListBox3->Items->Add( percorsoWin_[i] );
@@ -1060,7 +1060,7 @@ void TfrmMain::ScriviTesto( int x, int y, int h, TColor Col, String Testo, Gdipl
 
 void TfrmMain::DisegnaPercorsoWin()
 {
-ListBox1->Visible = true;
+//ListBox1->Visible = true;
 ListBox1->Clear();
 
     Gdiplus::Color Verde = TColorToGdiplusColor( clLime, 255 );
@@ -1113,7 +1113,7 @@ ListBox1->Items->Add( Idx );
 
 void TfrmMain::TogliRamiSecchi()
 {
-ListBox2->Visible = true;
+//ListBox2->Visible = true;
 ListBox2->Clear();
 
 for( UINT i = 0; i < percorsoWin_.size(); i ++ )
